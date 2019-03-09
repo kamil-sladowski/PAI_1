@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    h1 #{title}
+    form(method='GET', action='/about')
+    #form-group
+        label Title:
+        input.form-control(name='title', type='text')
+    #form-group
+        label Body:
+        textarea.form-control(name='body')
+    br

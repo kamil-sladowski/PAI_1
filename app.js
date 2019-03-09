@@ -100,8 +100,10 @@ app.get('/', function(req, res){
 // Route Files
 let articles = require('./routes/articles');
 let users = require('./routes/users');
+let about = require('./routes/abouts');
 app.use('/articles', articles);
 app.use('/users', users);
+app.use('/about', about);
 
 // Start Server
 app.listen(3000, function(){

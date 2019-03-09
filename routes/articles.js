@@ -10,8 +10,9 @@ let User = require('../models/user');
 router.get('/add', ensureAuthenticated, function(req, res){
   res.render('add_article', {
     title:'Add Article'
-  });
+  }); 
 });
+
 
 // Add Submit POST Route
 router.post('/add', function(req, res){

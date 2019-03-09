@@ -1,13 +1,10 @@
 {
   "name": "nodekb",
   "version": "1.0.0",
-  "description": "Simple knowledgebase app",
   "main": "app.js",
   "scripts": {
     "start": "node app"
   },
-  "author": "Brad Traversy",
-  "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
