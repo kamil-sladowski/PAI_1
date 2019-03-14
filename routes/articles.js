@@ -72,7 +72,6 @@ router.post('/edit/:id', function(req, res){
   Article.update(query, article, function(err){
     if(err){
       console.log(err);
-      return;
     } else {
       req.flash('success', 'Article Updated');
       res.redirect('/');
@@ -96,7 +95,7 @@ router.delete('/:id', function(req, res){
         if(err){
           console.log(err);
         }
-        res.send('Success');
+        res.send('Article removed');
       });
     }
   });

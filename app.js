@@ -42,7 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Express Session Middleware
 app.use(session({
-  secret: 'keyboard cat',
+  secret: 'secret',
   resave: true,
   saveUninitialized: true
 }));
@@ -95,6 +95,8 @@ app.get('/', function(req, res){
       });
     }
   });
+
+
 });
 
 // Route Files
@@ -104,6 +106,7 @@ let about = require('./routes/abouts');
 app.use('/articles', articles);
 app.use('/users', users);
 app.use('/about', about);
+app.use('bootstrap', express.static(__dirname+ "/bootstrap/bootstrap_example_1"))
 
 // Start Server
 app.listen(3000, function(){

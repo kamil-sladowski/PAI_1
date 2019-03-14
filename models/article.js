@@ -14,6 +14,7 @@ let articleSchema = mongoose.Schema({
     type: String,
     required: true
   }
+  // images: {type: Schema.Types.ObjectId, ref: "fs.files"}
 });
 
 let Article = module.exports = mongoose.model('Article', articleSchema);
