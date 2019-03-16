@@ -15,6 +15,25 @@ function checkIfAuthenticated(req, res, next){
   }
 }
 
+
+function saveArticle(req, res){
+  let article = new Article();
+  article.title = req.body.title;
+  article.author = req.user._id;
+  article.body = req.body.body;
+
+  article.save(function(err){
+    if(err){
+      console.log(err);
+      return;
+    } else {
+      req.flash('success','Article Added');
+      res.redirect('/');
+    }
+  });
+}
+
+
 router.get('/add', checkIfAuthenticated, function(req, res){
   res.render('add_article', {
     title:'Add Article'
@@ -24,10 +43,8 @@ router.get('/add', checkIfAuthenticated, function(req, res){
 
 router.post('/add', function(req, res){
   req.checkBody('title','Title is required').notEmpty();
-  //req.checkBody('author','Author is required').notEmpty();
   req.checkBody('body','Body is required').notEmpty();
 
-  // Get Errors
   let errors = req.validationErrors();
 
   if(errors){
@@ -36,20 +53,7 @@ router.post('/add', function(req, res){
       errors:errors
     });
   } else {
-    let article = new Article();
-    article.title = req.body.title;
-    article.author = req.user._id;
-    article.body = req.body.body;
-
-    article.save(function(err){
-      if(err){
-        console.log(err);
-        return;
-      } else {
-        req.flash('success','Article Added');
-        res.redirect('/');
-      }
-    });
+    saveArticle(req, res);
   }
 });
 
