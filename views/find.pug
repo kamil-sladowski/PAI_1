@@ -1,0 +1,11 @@
+extends layout
+
+block content
+    h1 #{title}
+    form(method='POST', action='/articles/find')
+        #form-group
+            label Provide phrase to find the article:
+            input.form-control(name='title', type='text')
+        br
+        input.btn.btn-primary(type='find',value='Find')
+

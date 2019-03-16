@@ -1,20 +1,27 @@
 const express = require('express');
 const router = express.Router();
 
-// Article Model
 let Article = require('../models/article');
-// User Model
 let User = require('../models/user');
+let Find = require('../models/find');
 
-// Add Route
-router.get('/add', ensureAuthenticated, function(req, res){
+
+function checkIfAuthenticated(req, res, next){
+  if(req.isAuthenticated()){
+    return next();
+  } else {
+    req.flash('danger', 'Please login');
+    res.redirect('/users/login');
+  }
+}
+
+router.get('/add', checkIfAuthenticated, function(req, res){
   res.render('add_article', {
     title:'Add Article'
   }); 
 });
 
 
-// Add Submit POST Route
 router.post('/add', function(req, res){
   req.checkBody('title','Title is required').notEmpty();
   //req.checkBody('author','Author is required').notEmpty();
@@ -46,8 +53,7 @@ router.post('/add', function(req, res){
   }
 });
 
-// Load Edit Form
-router.get('/edit/:id', ensureAuthenticated, function(req, res){
+router.get('/edit/:id', checkIfAuthenticated, function(req, res){
   Article.findById(req.params.id, function(err, article){
     if(article.author != req.user._id){
       req.flash('danger', 'Not Authorized');
@@ -60,7 +66,6 @@ router.get('/edit/:id', ensureAuthenticated, function(req, res){
   });
 });
 
-// Update Submit POST Route
 router.post('/edit/:id', function(req, res){
   let article = {};
   article.title = req.body.title;
@@ -79,7 +84,6 @@ router.post('/edit/:id', function(req, res){
   });
 });
 
-// Delete Article
 router.delete('/:id', function(req, res){
   if(!req.user._id){
     res.status(500).send();
@@ -101,7 +105,6 @@ router.delete('/:id', function(req, res){
   });
 });
 
-// Get Single Article
 router.get('/:id', function(req, res){
   Article.findById(req.params.id, function(err, article){
     User.findById(article.author, function(err, user){
@@ -113,14 +116,6 @@ router.get('/:id', function(req, res){
   });
 });
 
-// Access Control
-function ensureAuthenticated(req, res, next){
-  if(req.isAuthenticated()){
-    return next();
-  } else {
-    req.flash('danger', 'Please login');
-    res.redirect('/users/login');
-  }
-}
+
 
 module.exports = router;
