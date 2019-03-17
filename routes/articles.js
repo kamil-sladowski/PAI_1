@@ -15,12 +15,26 @@ function checkIfAuthenticated(req, res, next){
   }
 }
 
+function addArticle(res, req) {
+  let is_correct = validateArticle(req, res);
+
+  if(is_correct){
+    res.render('add_article', {
+      title:'Add Article',
+      errors:is_correct
+    });
+  } else {
+    saveArticle(req, res);
+  }
+}
+
 
 function saveArticle(req, res){
   let article = new Article();
   article.title = req.body.title;
   article.author = req.user._id;
   article.body = req.body.body;
+  article.image = req.body.image;
 
   article.save(function(err){
     if(err){
@@ -34,47 +48,12 @@ function saveArticle(req, res){
 }
 
 
-router.get('/add', checkIfAuthenticated, function(req, res){
-  res.render('add_article', {
-    title:'Add Article'
-  }); 
-});
-
-
-router.post('/add', function(req, res){
-  req.checkBody('title','Title is required').notEmpty();
-  req.checkBody('body','Body is required').notEmpty();
-
-  let errors = req.validationErrors();
-
-  if(errors){
-    res.render('add_article', {
-      title:'Add Article',
-      errors:errors
-    });
-  } else {
-    saveArticle(req, res);
-  }
-});
-
-router.get('/edit/:id', checkIfAuthenticated, function(req, res){
-  Article.findById(req.params.id, function(err, article){
-    if(article.author != req.user._id){
-      req.flash('danger', 'Not Authorized');
-      res.redirect('/');
-    }
-    res.render('edit_article', {
-      title:'Edit Article',
-      article:article
-    });
-  });
-});
-
-router.post('/edit/:id', function(req, res){
+function updateArticle(req, res){
   let article = {};
   article.title = req.body.title;
   article.author = req.body.author;
   article.body = req.body.body;
+  article.image = req.body.image;
 
   let query = {_id:req.params.id}
 
@@ -86,9 +65,10 @@ router.post('/edit/:id', function(req, res){
       res.redirect('/');
     }
   });
-});
+}
 
-router.delete('/:id', function(req, res){
+
+function deleteArticle(req, res){
   if(!req.user._id){
     res.status(500).send();
   }
@@ -107,9 +87,9 @@ router.delete('/:id', function(req, res){
       });
     }
   });
-});
+}
 
-router.get('/:id', function(req, res){
+function renderArticleById(req, res){
   Article.findById(req.params.id, function(err, article){
     User.findById(article.author, function(err, user){
       res.render('article', {
@@ -118,7 +98,85 @@ router.get('/:id', function(req, res){
       });
     });
   });
+}
+
+
+function renderArticleToEditById(req, res){
+  Article.findById(req.params.id, function(err, article){
+    if(article.author != req.user._id){
+      req.flash('danger', 'Not Authorized');
+      res.redirect('/');
+    }
+    res.render('edit_article', {
+      title:'Edit Article',
+      article:article
+    });
+  });
+}
+
+
+function validateArticle(req, res){
+  req.checkBody('title','Title is required').notEmpty();
+  req.checkBody('body','Body is required').notEmpty();
+  return req.validationErrors();
+}
+
+
+function renderAddingArticlePage(res){
+  res.render('add_article', {
+    title:'Add Article'
+  });
+}
+
+
+router.get('/add', checkIfAuthenticated, function(req, res){
+  renderAddingArticlePage(res);
 });
+
+
+router.post('/add', function(req, res){
+  addArticle(res, req);
+});
+
+
+router.get('/edit/:id', checkIfAuthenticated, function(req, res){
+  renderArticleToEditById(req, res);
+});
+
+
+router.post('/edit/:id', function(req, res){
+  updateArticle(req, res);
+});
+
+router.delete('/:id', function(req, res){
+  deleteArticle(req, res);
+});
+
+router.get('/:id', function(req, res){
+  renderArticleById(req, res);
+});
+
+
+// router.post('/display/:keyword', checkIfAuthenticated, function(req, res){
+// router.post('/display', checkIfAuthenticated, function(req, res){
+//   // Article.find({ "body": {$regex: /aaa/}}, (err, articles) => {res.json(articles)})
+//   // req.flash('danger', 'DISPLAY');
+//
+//   // console.log(articles);
+//   console.log("AAAAAAAAAAAAAAAA");
+//
+//   // Article.findById(req.params.id, function(err, article){
+//   //   if(article.author != req.user._id){
+//   //     req.flash('danger', 'Not Authorized');
+//   //     res.redirect('/');
+//   //   }
+//   //   res.render('edit_article', {
+//   //     title:'Edit Article',
+//   //     article:article
+//   //   });
+//   // });
+// });
+
 
 
 

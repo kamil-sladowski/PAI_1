@@ -12,6 +12,10 @@ let articleSchema = mongoose.Schema({
   body:{
     type: String,
     required: true
+  },
+  image:{
+    type: String,
+    required: true
   }
   // images: {type: Schema.Types.ObjectId, ref: "fs.files"}
 });
