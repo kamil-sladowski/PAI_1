@@ -1,7 +1,6 @@
 let mongoose = require('mongoose');
 
 //
-// // Article Schema
 // let aboutSchema = mongoose.Schema({
 //     title:{
 //         type: String,

@@ -5,6 +5,9 @@ let Article = require('../models/article');
 let User = require('../models/user');
 let Find = require('../models/find');
 
+// var mongoReader = require('../mongoReader');
+
+
 
 function checkIfAuthenticated(req, res, next){
   if(req.isAuthenticated()){
@@ -93,9 +96,12 @@ function renderArticleById(req, res){
   Article.findById(req.params.id, function(err, article){
     User.findById(article.author, function(err, user){
       res.render('article', {
-        article:article,
+        article: article,
         author: user.name
+        // image: fs.files
+
       });
+
     });
   });
 }
@@ -154,6 +160,11 @@ router.delete('/:id', function(req, res){
 
 router.get('/:id', function(req, res){
   renderArticleById(req, res);
+});
+
+
+router.post('/find', function(req, res){
+  console.log("CCCCCCCCCCCCC");
 });
 
 

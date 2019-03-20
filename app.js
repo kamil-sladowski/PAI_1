@@ -1,5 +1,4 @@
 const express = require('express');
-const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
@@ -7,17 +6,50 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
 const config = require('./config/database');
+require('./config/passport')(passport);
+var path = require("path");
+var grid = require("gridfs-stream");
+var fs = require("fs");
 
-mongoose.connect(config.database);
-let db = mongoose.connection;
 
-db.once('open', function(){
-  console.log('Connected to MongoDB');
-});
+function wrtiteImageToDatabase() {
+  mongoose.connect(config.database);
+  var conn = mongoose.connection;
 
-db.on('error', function(err){
-  console.log(err);
-});
+  if (conn !== "undefined") {
+    console.log(conn.readyState.toString());
+
+    var filesrc = path.join(__dirname, './images/dog.jpeg');
+
+    grid.mongo = mongoose.mongo;
+    conn.once("open", () => {
+      console.log("Connection to Mongo opened");
+      var gridfs = grid(conn.db);
+      if (gridfs) {
+        var streamwrite = gridfs.createWriteStream({
+          filename: "dog.jpeg"
+        });
+        fs.createReadStream(filesrc).pipe(streamwrite);
+        streamwrite.on("close", function (file) {
+          console.log("Write written successfully in database");
+        });
+      } else {
+        console.log("Sorry No Grid FS Object");
+      }
+    });
+  } else {
+
+    console.log('Sorry not connected');
+  }
+  console.log("done");
+
+}
+
+
+wrtiteImageToDatabase();
+
+
+
 
 const app = express();
 
@@ -59,8 +91,6 @@ app.use(expressValidator({
   }
 }));
 
-require('./config/passport')(passport);
-// Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -92,8 +122,7 @@ app.use('/articles', articles);
 app.use('/users', users);
 app.use('/about', about);
 app.use('/find', find_article);
-app.use('bootstrap', express.static(__dirname+ "/bootstrap/bootstrap_example_1"))
 
-app.listen(3000, function(){
-  console.log('Server started on port 3000...');
+app.listen(8080, function(){
+  console.log('Server start');
 });
