@@ -1,16 +1,51 @@
 extends layout
 
 block content
-  h1 #{title}
-  form(method='POST', action='/articles/add')
-    #form-group
-      label Title:
-      input.form-control(name='title', type='text')
-    #form-group
-      label Body:
-      textarea.form-control(name='body')
-    #form-group
-      label Image:
-      textarea.form-control(name='image')
-    br
-    input.btn.btn-primary(type='submit',value='Submit')
+  .container
+    .row
+      .col.s12
+        nav(style="background-color: #082768")
+          x.nav-wrapper
+            span.flow-text
+              | &nbsp; Nodejs file add_article with MongoDB
+
+    form(action='/add_article' method="POST" enctype="multipart/form-data")
+      .row
+        .input-field.col.s12
+          input#title.validate(type='text' name="title")
+          label(for='title') Title
+      .row
+        .input-field.col.s12
+          input#body.validate(type='text' name="body")
+          label(for='body') Body
+      .row
+        .col.s12
+          if msg ==1
+            .success
+              | Photo uploaded successfully
+          else if msg == 2
+            .error
+              | File size too large
+          else if msg == 3
+            .error
+              | Invalid file type. Only JPG, PNG or GIF file are allowed.
+      .row
+        .col.s12
+          .file-field.input-field
+            .btn.grey
+              span File
+              input(type='file' name="photo" required)
+            .file-path-wrapper
+              input.file-path.validate(type='text' )
+      .row
+        .input-field.col.s12
+          input#caption.validate(type='text' name="caption")
+          label(for='caption') Caption
+
+      .row
+        .col.s12
+          button.btn.waves-effect.waves-light(type='submit', name='action')
+            | Upload
+            i.material-icons.right send
+
+

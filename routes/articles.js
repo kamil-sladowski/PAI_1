@@ -3,10 +3,13 @@ const router = express.Router();
 
 let Article = require('../models/article');
 let User = require('../models/user');
+let Image = require('../models/image');
 let Find = require('../models/find');
 
-// var mongoReader = require('../mongoReader');
-
+// var pug = require('pug');
+// var mongoose  = require('mongoose');
+//
+// var Photo = mongoose.model('Photos');
 
 
 function checkIfAuthenticated(req, res, next){
@@ -93,6 +96,7 @@ function deleteArticle(req, res){
 }
 
 function renderArticleById(req, res){
+
   Article.findById(req.params.id, function(err, article){
     User.findById(article.author, function(err, user){
       res.render('article', {
@@ -164,30 +168,8 @@ router.get('/:id', function(req, res){
 
 
 router.post('/find', function(req, res){
-  console.log("CCCCCCCCCCCCC");
+  console.log("Not implemented");
 });
-
-
-// router.post('/display/:keyword', checkIfAuthenticated, function(req, res){
-// router.post('/display', checkIfAuthenticated, function(req, res){
-//   // Article.find({ "body": {$regex: /aaa/}}, (err, articles) => {res.json(articles)})
-//   // req.flash('danger', 'DISPLAY');
-//
-//   // console.log(articles);
-//   console.log("AAAAAAAAAAAAAAAA");
-//
-//   // Article.findById(req.params.id, function(err, article){
-//   //   if(article.author != req.user._id){
-//   //     req.flash('danger', 'Not Authorized');
-//   //     res.redirect('/');
-//   //   }
-//   //   res.render('edit_article', {
-//   //     title:'Edit Article',
-//   //     article:article
-//   //   });
-//   // });
-// });
-
 
 
 
