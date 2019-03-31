@@ -46,7 +46,7 @@ function saveArticle(req, res){
 
       }else{
 
-        var fullPath = "files/"+req.file.filename;
+        var fullPath = "../files/"+req.file.filename;
 
         var document = {
           path:     fullPath,
@@ -96,7 +96,6 @@ function updateArticle(req, res){
   article.title = req.body.title;
   article.author = req.body.author;
   article.body = req.body.body;
-  article.image = req.body.image;
 
   let query = {_id:req.params.id}
 
@@ -138,8 +137,7 @@ function renderArticleById(req, res){
     User.findById(article.author, function(err, user){
       res.render('article', {
         article: article,
-        author: user.name,
-        title: 'NodeJS file upload tutorial', msg:req.query.msg
+        author: user.name
       });
 
     });
