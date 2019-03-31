@@ -54,7 +54,7 @@ var fs = require("fs");
 
 mongoose.Promise = global.Promise;
 mongoose.connect(config.database);
-require("./models/Photo");
+// require("./models/Photo");
 
 
 const app = express();

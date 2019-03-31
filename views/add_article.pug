@@ -9,7 +9,7 @@ block content
             span.flow-text
               | &nbsp; Nodejs file add_article with MongoDB
 
-    form(action='/add_article' method="POST" enctype="multipart/form-data")
+    form(action='/articles/add' method="POST" enctype="multipart/form-data")
       .row
         .input-field.col.s12
           input#title.validate(type='text' name="title")

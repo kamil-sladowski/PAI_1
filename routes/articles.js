@@ -6,11 +6,8 @@ let User = require('../models/user');
 let Image = require('../models/image');
 let Find = require('../models/find');
 
-// var pug = require('pug');
-// var mongoose  = require('mongoose');
-//
-// var Photo = mongoose.model('Photos');
-
+var mongoose  = require('mongoose');
+var upload    = require('./add_article');
 
 function checkIfAuthenticated(req, res, next){
   if(req.isAuthenticated()){
@@ -21,9 +18,13 @@ function checkIfAuthenticated(req, res, next){
   }
 }
 
+
+
+
+
 function addArticle(res, req) {
   let is_correct = validateArticle(req, res);
-
+  console.log(is_correct);
   if(is_correct){
     res.render('add_article', {
       title:'Add Article',
@@ -36,28 +37,68 @@ function addArticle(res, req) {
 
 
 function saveArticle(req, res){
-  let article = new Article();
-  article.title = req.body.title;
-  article.author = req.user._id;
-  article.body = req.body.body;
-  article.image = req.body.image;
+  upload(req, res,(error) => {
+    if(error){
+      res.redirect('/?msg=3');
+    }else{
+      if(req.file == undefined){
 
-  article.save(function(err){
-    if(err){
-      console.log(err);
-      return;
-    } else {
-      req.flash('success','Article Added');
-      res.redirect('/');
+        // res.redirect('/?msg=2');
+        req.flash('failure','File undefined');
+
+      }else{
+
+        var fullPath = "files/"+req.file.filename;
+
+        var document = {
+          path:     fullPath,
+          caption:   req.body.caption,
+          title: req.body.title,
+          // author: req.user._id,
+          author: "kamil",
+          body: req.body.body
+        };
+
+        var article = new Article(document);
+        article.save(function(error){
+          if(error){
+            console.log(error);
+            return;
+          }
+          else {
+            req.flash('success','Article Added');
+            res.redirect('/');
+          }
+        });
+      }
     }
   });
+
+
+  // let article = new Article();
+  // article.title = req.body.title;
+  // article.author = req.user._id;
+  // article.body = req.body.body;
+  //
+  // article.save(function(err){
+  //   if(err){
+  //     console.log(err);
+  //     return;
+  //   } else {
+  //     req.flash('success','Article Added');
+  //     res.redirect('/');
+  //   }
+  // });
+
+
 }
 
 
 function updateArticle(req, res){
   let article = {};
   article.title = req.body.title;
-  article.author = req.body.author;
+  // article.author = req.body.author;
+  article.author = "kamil";
   article.body = req.body.body;
   article.image = req.body.image;
 
@@ -82,16 +123,16 @@ function deleteArticle(req, res){
   let query = {_id:req.params.id}
 
   Article.findById(req.params.id, function(err, article){
-    if(article.author != req.user._id){
-      res.status(500).send();
-    } else {
+    // if(article.author != req.user._id){
+    //   res.status(500).send();
+    // } else {
       Article.remove(query, function(err){
         if(err){
           console.log(err);
         }
         res.send('Article removed');
       });
-    }
+    // }
   });
 }
 
@@ -101,9 +142,9 @@ function renderArticleById(req, res){
     User.findById(article.author, function(err, user){
       res.render('article', {
         article: article,
-        author: user.name
-        // image: fs.files
-
+        // author: user.name,
+        author: "kamil",
+        title: 'NodeJS file upload tutorial', msg:req.query.msg, photolist : article
       });
 
     });
@@ -111,12 +152,13 @@ function renderArticleById(req, res){
 }
 
 
+
 function renderArticleToEditById(req, res){
   Article.findById(req.params.id, function(err, article){
-    if(article.author != req.user._id){
-      req.flash('danger', 'Not Authorized');
-      res.redirect('/');
-    }
+    // if(article.author != req.user._id){
+    //   req.flash('danger', 'Not Authorized');
+    //   res.redirect('/');
+    // }
     res.render('edit_article', {
       title:'Edit Article',
       article:article
@@ -126,8 +168,8 @@ function renderArticleToEditById(req, res){
 
 
 function validateArticle(req, res){
-  req.checkBody('title','Title is required').notEmpty();
-  req.checkBody('body','Body is required').notEmpty();
+  // req.checkBody('title','Title is required').notEmpty();
+  // req.checkBody('body','Body is required').notEmpty();
   return req.validationErrors();
 }
 

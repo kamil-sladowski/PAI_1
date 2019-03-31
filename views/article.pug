@@ -4,6 +4,15 @@ block content
   h1= article.title
   h5 Written by #{author}
   p= article.body
+  if photolist.length
+    | <div class="col">
+    | <div class ="center-align caption"><img src = #{photolist[0].path} alt="image" class="responsive-img" />
+    | <p class="center-align caption">#{photolist[0].caption}</p>
+    | </div>
+  else
+    .row
+      .col.s12
+        .caption No photos uploaded yet.
   hr
   if user
     if user.id ==article.author

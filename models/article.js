@@ -13,11 +13,12 @@ let articleSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  image:{
-    type: String,
-    required: true
-  }
-  // images: {type: Schema.Types.ObjectId, ref: "fs.files"}
+  path:  {
+    type: String
+  },
+  caption: {
+    type: String
+  },
 });
 
 let Article = module.exports = mongoose.model('Article', articleSchema);
