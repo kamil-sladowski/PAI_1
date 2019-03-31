@@ -3,8 +3,6 @@ const router = express.Router();
 
 let Article = require('../models/article');
 let User = require('../models/user');
-let Image = require('../models/image');
-let Find = require('../models/find');
 
 var mongoose  = require('mongoose');
 var upload    = require('./add_article');
@@ -54,8 +52,7 @@ function saveArticle(req, res){
           path:     fullPath,
           caption:   req.body.caption,
           title: req.body.title,
-          // author: req.user._id,
-          author: "kamil",
+          author: req.user._id,
           body: req.body.body
         };
 
@@ -97,8 +94,7 @@ function saveArticle(req, res){
 function updateArticle(req, res){
   let article = {};
   article.title = req.body.title;
-  // article.author = req.body.author;
-  article.author = "kamil";
+  article.author = req.body.author;
   article.body = req.body.body;
   article.image = req.body.image;
 
@@ -123,16 +119,16 @@ function deleteArticle(req, res){
   let query = {_id:req.params.id}
 
   Article.findById(req.params.id, function(err, article){
-    // if(article.author != req.user._id){
-    //   res.status(500).send();
-    // } else {
+    if(article.author != req.user._id){
+      res.status(500).send();
+    } else {
       Article.remove(query, function(err){
         if(err){
           console.log(err);
         }
         res.send('Article removed');
       });
-    // }
+    }
   });
 }
 
@@ -142,9 +138,8 @@ function renderArticleById(req, res){
     User.findById(article.author, function(err, user){
       res.render('article', {
         article: article,
-        // author: user.name,
-        author: "kamil",
-        title: 'NodeJS file upload tutorial', msg:req.query.msg, photolist : article
+        author: user.name,
+        title: 'NodeJS file upload tutorial', msg:req.query.msg
       });
 
     });
@@ -155,10 +150,10 @@ function renderArticleById(req, res){
 
 function renderArticleToEditById(req, res){
   Article.findById(req.params.id, function(err, article){
-    // if(article.author != req.user._id){
-    //   req.flash('danger', 'Not Authorized');
-    //   res.redirect('/');
-    // }
+    if(article.author != req.user._id){
+      req.flash('danger', 'Not Authorized');
+      res.redirect('/');
+    }
     res.render('edit_article', {
       title:'Edit Article',
       article:article

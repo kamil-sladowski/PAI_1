@@ -12,49 +12,10 @@ var grid = require("gridfs-stream");
 var fs = require("fs");
 
 
-// function wrtiteImageToDatabase() {
-//   mongoose.connect(config.database);
-//   mongoose.Promise = global.Promise;
-//   var conn = mongoose.connection;
-//   require("./models/Photo");
-//
-//   if (conn !== "undefined") {
-//     console.log(conn.readyState.toString());
-//
-//     var filesrc = path.join(__dirname, './images/dog.jpeg');
-//
-//     grid.mongo = mongoose.mongo;
-//     conn.once("open", () => {
-//       console.log("Connection to Mongo opened");
-//       var gridfs = grid(conn.db);
-//       if (gridfs) {
-//         var streamwrite = gridfs.createWriteStream({
-//           filename: "dog.jpeg"
-//         });
-//         fs.createReadStream(filesrc).pipe(streamwrite);
-//         streamwrite.on("close", function (file) {
-//           console.log("Write written successfully in database");
-//         });
-//       } else {
-//         console.log("Sorry No Grid FS Object");
-//       }
-//     });
-//   } else {
-//
-//     console.log('Sorry not connected');
-//   }
-//   console.log("done");
-//
-// }
-//
-//
-// wrtiteImageToDatabase();
-
 
 
 mongoose.Promise = global.Promise;
 mongoose.connect(config.database);
-// require("./models/Photo");
 
 
 const app = express();

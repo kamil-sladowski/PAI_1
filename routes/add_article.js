@@ -10,7 +10,6 @@ const storageEngine = multer.diskStorage({
     }
 });
 
-//init
 
 const add_article =  multer({
     storage: storageEngine,

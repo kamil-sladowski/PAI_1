@@ -4,20 +4,17 @@ block content
   h1= article.title
   h5 Written by #{author}
   p= article.body
-  if photolist.length
+  if true
     | <div class="col">
-    | <div class ="center-align caption"><img src = #{photolist[0].path} alt="image" class="responsive-img" />
-    | <p class="center-align caption">#{photolist[0].caption}</p>
+    | <div class ="center-align caption"><img src = #{article.path} alt="image" class="responsive-img" />
+    | <p class="center-align caption">#{article.caption}</p>
     | </div>
   else
     .row
       .col.s12
         .caption No photos uploaded yet.
   hr
-  if user
-    if user.id ==article.author
-      a.btn.btn-default(href='/articles/edit/'+article._id) Edit 
-      a.btn.btn-danger.delete-article(href='#',data-id=article._id) Delete
-  .image-block
-    h3 Hello
-    img.image(src="/dog.jpeg")
+
+  a.btn.btn-default(href='/articles/edit/'+article._id) Edit
+  a.btn.btn-danger.delete-article(href='#',data-id=article._id) Delete
+
