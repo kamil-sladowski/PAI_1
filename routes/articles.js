@@ -71,42 +71,33 @@ function saveArticle(req, res){
     }
   });
 
-
-  // let article = new Article();
-  // article.title = req.body.title;
-  // article.author = req.user._id;
-  // article.body = req.body.body;
-  //
-  // article.save(function(err){
-  //   if(err){
-  //     console.log(err);
-  //     return;
-  //   } else {
-  //     req.flash('success','Article Added');
-  //     res.redirect('/');
-  //   }
-  // });
-
-
 }
 
 
 function updateArticle(req, res){
-  let article = {};
-  article.title = req.body.title;
-  article.author = req.body.author;
-  article.body = req.body.body;
+  upload(req, res,(error) => {
+    let document = {};
+    let fullPath = "../files/" + req.file.filename;
 
-  let query = {_id:req.params.id}
+    document.title = req.body.title;
+    document.author = req.body.author;
+    document.body = req.body.body;
+    document.caption = req.body.caption;
+    document.path = fullPath;
 
-  Article.update(query, article, function(err){
-    if(err){
-      console.log(err);
-    } else {
-      req.flash('success', 'Article Updated');
-      res.redirect('/');
-    }
-  });
+    var article = new Article(document);
+
+    let query = {_id: req.params.id}
+
+    article.update(query, function (err) {
+      if (err) {
+        console.log(err);
+      } else {
+        req.flash('success', 'Article Updated');
+        res.redirect('/');
+      }
+    });
+  })
 }
 
 
